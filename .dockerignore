@@ -1,0 +1,9 @@
+node_modules
+temp_build
+tmp_profile
+.git
+*.png
+*.pdf
+.system_generated
+.user_uploaded
+scratch

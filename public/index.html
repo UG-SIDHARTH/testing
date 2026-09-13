@@ -1,0 +1,299 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LabRecord Studio — C Compiler &amp; Academic PDF Lab Record Generator</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- TOP NAVIGATION HEADER -->
+  <header class="app-header">
+    <div class="brand-container">
+      <div class="brand-logo">⚡</div>
+      <div class="brand-text">
+        <h1 class="brand-title">LabRecord Studio</h1>
+        <p class="brand-tagline">C Code Compiler &amp; Academic PDF Lab Record Generator</p>
+      </div>
+    </div>
+
+    <div class="header-actions">
+      <button class="btn btn-secondary" id="btnLoadPresets" title="Load the 11 verified Data Structures C programs">
+        <span class="btn-icon">⚡</span>
+        <span>Load 11 DS Presets</span>
+      </button>
+
+      <label class="btn btn-secondary file-upload-btn" id="lblUpload" title="Upload one or multiple .c files">
+        <span class="btn-icon">📂</span>
+        <span>Upload .c Files</span>
+        <input type="file" id="fileInput" multiple accept=".c,.h,.txt" hidden>
+      </label>
+
+      <button class="btn btn-primary" id="btnRunAll" title="Compile and run all currently selected programs with GCC">
+        <span class="btn-icon">▶</span>
+        <span>Run Selected (<span id="runCountBadge">0</span>)</span>
+      </button>
+
+      <button class="btn btn-secondary" id="btnExportHtml" title="Export self-contained HTML lab record">
+        <span class="btn-icon">🌐</span>
+        <span>Export HTML</span>
+      </button>
+
+      <button class="btn btn-accent" id="btnGeneratePdf" title="Compile and generate printable A4 PDF lab record">
+        <span class="btn-icon">📑</span>
+        <span>Generate PDF Record</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN WORKSPACE -->
+  <main class="app-main">
+    
+    <!-- LEFT SIDEBAR: PROGRAMS LIST & DROPZONE -->
+    <aside class="sidebar-panel">
+      <div class="panel-header">
+        <div class="panel-title-wrap">
+          <h2 class="panel-title">Practical Programs</h2>
+          <span class="badge-counter" id="progCount">0 Files</span>
+        </div>
+        <button class="btn-icon-only" id="btnAddBlank" title="Add blank practical program">+</button>
+      </div>
+
+      <!-- Quick Selection Toolbar -->
+      <div class="selection-toolbar">
+        <label class="select-all-label">
+          <input type="checkbox" id="chkSelectAll" checked>
+          <span>Select All</span>
+        </label>
+        <span class="selected-pill" id="selectedBadge">0 Selected</span>
+        <div class="selection-quick-btns">
+          <button class="btn-pill" id="btnQuickSelectAll" title="Select all programs">All</button>
+          <button class="btn-pill highlight" id="btnQuickSelect4and11" title="Select specifically Program 4 and Program 11">4 &amp; 11</button>
+          <button class="btn-pill" id="btnQuickSelectNone" title="Deselect all">None</button>
+        </div>
+      </div>
+
+      <!-- Dropzone -->
+      <div class="dropzone" id="dropzone" title="Click or drag .c files here">
+        <div class="dropzone-icon">📥</div>
+        <p class="dropzone-text">Drag &amp; drop <strong>.c files</strong> here</p>
+        <span class="dropzone-sub">or click to browse local files</span>
+      </div>
+
+      <!-- Program List -->
+      <div class="programs-list" id="programsList">
+        <!-- Injected via JavaScript -->
+      </div>
+    </aside>
+
+    <!-- CENTER PANEL: ACTIVE PROGRAM CODE & STDIN -->
+    <section class="editor-panel">
+      <div class="editor-header">
+        <div class="editor-meta-inputs">
+          <div class="input-group title-group">
+            <label class="input-label" for="progTitleInput">Program Title / Experiment Name</label>
+            <input type="text" id="progTitleInput" class="text-input" placeholder="e.g. Matrix Addition">
+          </div>
+          <div class="input-group file-group">
+            <label class="input-label" for="progFileInput">C Source Filename</label>
+            <input type="text" id="progFileInput" class="text-input font-mono" placeholder="e.g. 1_matrix_add.c">
+          </div>
+        </div>
+
+        <div class="editor-actions">
+          <button class="btn btn-sm btn-primary" id="btnRunCurrent" title="Compile and run only this program (Ctrl + Enter)">
+            <span class="btn-icon">▶</span>
+            <span>Run This (Ctrl+↵)</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Code Editor Window -->
+      <div class="code-editor-wrapper">
+        <div class="code-editor-bar">
+          <div class="editor-bar-left">
+            <span class="code-tag">C Source Code</span>
+            <span class="compiler-tag">GCC MinGW 6.3.0</span>
+            <span class="status-indicator" id="codeSyncStatus">● Saved</span>
+          </div>
+          <div class="editor-bar-right">
+            <span class="stats-text" id="codeStats">0 lines</span>
+          </div>
+        </div>
+
+        <div class="editor-body">
+          <div class="line-numbers" id="lineNumbers">1</div>
+          <textarea id="codeEditor" class="code-textarea" spellcheck="false" placeholder="// Type or paste C source code here...&#10;#include <stdio.h>&#10;&#10;int main() {&#10;    printf(&quot;Hello, World!\\n&quot;);&#10;    return 0;&#10;}"></textarea>
+        </div>
+      </div>
+
+      <!-- BOTTOM CONFIG: STDIN & EDITABLE CAPTURED OUTPUT -->
+      <div class="editor-bottom-drawer">
+        <!-- Drawer Tabs -->
+        <div class="drawer-header">
+          <div class="drawer-tabs">
+            <button class="drawer-tab-btn active" id="btnDrawerStdin" data-drawer="drawerStdin">
+              <span class="drawer-tab-icon">⌨</span>
+              <span>Standard Input (stdin for scanf)</span>
+            </button>
+            <button class="drawer-tab-btn" id="btnDrawerOutput" data-drawer="drawerOutput">
+              <span class="drawer-tab-icon">📋</span>
+              <span>Output for PDF Record</span>
+              <span class="output-status-dot" id="outputStatusDot"></span>
+            </button>
+          </div>
+          <span class="drawer-hint" id="drawerHint">Optional: Provide interactive inputs for scanf() separated by spaces or newlines</span>
+        </div>
+
+        <!-- Drawer Content 1: Stdin -->
+        <div class="drawer-pane active" id="drawerStdin">
+          <textarea id="stdinEditor" class="drawer-textarea font-mono" placeholder="e.g. 2 2&#10;1 2 3 4&#10;5 6 7 8"></textarea>
+        </div>
+
+        <!-- Drawer Content 2: Editable Output -->
+        <div class="drawer-pane" id="drawerOutput">
+          <div class="output-toolbar">
+            <span class="output-toolbar-label">This output will be printed directly on the PDF record below the source code. You can edit or format it anytime:</span>
+            <button class="btn btn-xs btn-secondary" id="btnRevertOutput" title="Clear or refresh output">Clear Output</button>
+          </div>
+          <textarea id="outputEditor" class="drawer-textarea font-mono" placeholder="(No output captured yet. Click 'Run This' to compile and execute, or type/paste precomputed output here...)"></textarea>
+        </div>
+      </div>
+    </section>
+
+    <!-- RIGHT PANEL: TERMINAL LOGS, PDF PREVIEW & SETTINGS -->
+    <aside class="output-panel">
+      <!-- Tabs -->
+      <div class="output-tabs">
+        <button class="tab-btn active" data-tab="tabTerminal" id="btnTabTerminal">
+          <span class="tab-icon">🖥</span> Terminal Output
+        </button>
+        <button class="tab-btn" data-tab="tabPreview" id="btnTabPreview">
+          <span class="tab-icon">📑</span> PDF Record Preview
+        </button>
+        <button class="tab-btn" data-tab="tabSettings" id="btnTabSettings">
+          <span class="tab-icon">⚙</span> Document Header
+        </button>
+      </div>
+
+      <!-- Tab Content 1: Terminal Console -->
+      <div class="tab-content active" id="tabTerminal">
+        <div class="terminal-container">
+          <div class="terminal-bar">
+            <div class="terminal-dots">
+              <span class="term-dot red"></span>
+              <span class="term-dot yellow"></span>
+              <span class="term-dot green"></span>
+            </div>
+            <span class="terminal-title font-mono" id="termStatusTitle">Terminal — Ready</span>
+            <span class="term-time font-mono" id="termExecTime"></span>
+          </div>
+          <div class="terminal-body" id="terminalOutput">
+            <div class="term-line prompt">
+              <span class="usr">student@labrecord</span>:<span class="dir">~/c_practicals</span>$ <span class="cmd">system ready</span>
+            </div>
+            <div class="term-line info">Upload your .c files or click "Load 11 DS Presets" to begin.</div>
+            <div class="term-line info">Clicking "Run Selected" will compile with MinGW GCC and capture terminal output.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 2: PDF Record Preview -->
+      <div class="tab-content" id="tabPreview">
+        <div class="preview-container">
+          <div class="preview-toolbar">
+            <div class="preview-info">
+              <span class="preview-badge">PDF OUTPUT</span>
+              <span class="preview-desc" id="pdfPageStats">Format: A4 Print | Page breaks after each practical</span>
+            </div>
+            <div class="preview-actions">
+              <button class="btn btn-sm btn-secondary" id="btnOpenNewTab" title="Open PDF in a new browser tab">↗ Open Tab</button>
+              <button class="btn btn-sm btn-secondary" id="btnDownloadHtml" title="Download self-contained HTML record">🌐 HTML</button>
+              <button class="btn btn-sm btn-accent" id="btnDownloadPdf" title="Download high-resolution A4 PDF">⬇ Download PDF</button>
+            </div>
+          </div>
+          
+          <div class="preview-frame-wrap" id="previewWrapper">
+            <div class="preview-placeholder" id="previewPlaceholder">
+              <div class="placeholder-icon">📑</div>
+              <h3>No PDF Record Generated Yet</h3>
+              <p>Click the <strong>"Generate PDF Record"</strong> button in the top bar to compile and create a publication-ready PDF lab record.</p>
+              <button class="btn btn-accent" id="btnTriggerPdfFromPlaceholder">Generate PDF Now</button>
+            </div>
+            <iframe id="pdfIframe" class="pdf-iframe hidden" title="PDF Preview"></iframe>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tab Content 3: Document & Student Settings -->
+      <div class="tab-content" id="tabSettings">
+        <div class="settings-container">
+          <h3 class="settings-title">Academic Header &amp; Student Credentials</h3>
+          <p class="settings-desc">Customize the academic details that appear on the running headers and footers of each page in the generated PDF record.</p>
+
+          <div class="settings-form">
+            <div class="input-group">
+              <label class="input-label" for="settingDocTitle">Subject / Course Name</label>
+              <input type="text" id="settingDocTitle" class="text-input" value="Data Structures &amp; Algorithms Laboratory (C Programming)">
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="settingSubtitle">Document Subtitle (Running Header Right)</label>
+              <input type="text" id="settingSubtitle" class="text-input" value="Source Code &amp; Output Verification">
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="settingInstitution">Department / Institution</label>
+              <input type="text" id="settingInstitution" class="text-input" placeholder="e.g. Dept. of Computer Science &amp; Engineering">
+            </div>
+
+            <div class="settings-row">
+              <div class="input-group flex-1">
+                <label class="input-label" for="settingStudentName">Student Name</label>
+                <input type="text" id="settingStudentName" class="text-input" placeholder="e.g. Student Name">
+              </div>
+              <div class="input-group flex-1">
+                <label class="input-label" for="settingStudentRoll">Roll / Register No.</label>
+                <input type="text" id="settingStudentRoll" class="text-input" placeholder="e.g. 23CS101">
+              </div>
+            </div>
+
+            <div class="input-group">
+              <label class="input-label" for="settingDate">Submission Date</label>
+              <input type="text" id="settingDate" class="text-input" value="Academic Year 2026">
+            </div>
+
+            <div class="settings-callout">
+              <span class="callout-icon">💡</span>
+              <div class="callout-text">
+                <strong>Print-Optimized Format:</strong>
+                Each practical experiment generates a clean C source code listing followed immediately by its verified terminal output, and then automatically inserts a page break to begin the next experiment on a fresh A4 page.
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div class="toast-container" id="toastContainer"></div>
+
+  <!-- LOADING OVERLAY MODAL -->
+  <div class="loading-overlay hidden" id="loadingOverlay">
+    <div class="spinner-box">
+      <div class="spinner"></div>
+      <h3 class="loading-title" id="loadingTitle">Processing...</h3>
+      <p class="loading-desc" id="loadingDesc">Compiling with MinGW GCC and capturing output...</p>
+    </div>
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>

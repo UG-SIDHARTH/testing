@@ -431,6 +431,276 @@ Postfix Expression:
     ],
     output: `Enter the postfix expression: 2 3 + 4 5 - *
 Result: -5`
+  },
+  {
+    number: 12,
+    file: '12_single_linked_list.c',
+    title: 'Singly Linked List Operations',
+    category: 'Linked Lists',
+    aim: 'To write a menu-driven C program to implement Singly Linked List operations: Creation, Display, Search, Insertion (Beginning, Middle, End), and Deletion (Beginning, Middle, End).',
+    algorithm: [
+      'Define a structure Node containing integer data and a pointer next. Set head = NULL.',
+      'CREATE: Read data, allocate newNode. If head == NULL, set head = newNode. Else traverse to end and attach newNode.',
+      'DISPLAY: If head == NULL, print empty. Else traverse and print each node data until NULL.',
+      'SEARCH: Read key to search. Traverse nodes tracking position. If node->data == key, display position; else report not found.',
+      'INSERT AT BEGINNING: Allocate newNode, set newNode->next = head, head = newNode.',
+      'INSERT AT MIDDLE: Read data and position pos. Traverse to (pos - 1)-th node, set newNode->next = temp->next, temp->next = newNode.',
+      'INSERT AT END: Allocate newNode. Traverse to the last node and set temp->next = newNode.',
+      'DELETE AT BEGINNING: Set temp = head, head = head->next, free(temp).',
+      'DELETE AT MIDDLE: Traverse to (pos - 1)-th node. Unlink target node delNode = temp->next, temp->next = delNode->next, free(delNode).',
+      'DELETE AT END: Traverse to the second-to-last node. Unlink last node, free it, and set temp->next = NULL.'
+    ],
+    output: `- - - Linked List Menu - - -
+1. Create
+2. Display
+3. Search
+4. Insert at Beginning
+5. Insert at Middle
+6. Insert at End
+7. Delete at Beginning
+8. Delete at Middle
+9. Delete at End
+10. Exit
+Enter choice : 1
+Enter data : 10
+Node created successfully
+
+- - - Linked List Menu - - -
+Enter choice : 2
+Linked List: 10 -> NULL
+
+- - - Linked List Menu - - -
+Enter choice : 4
+Enter data : 5
+Node inserted successfully at beginning
+
+- - - Linked List Menu - - -
+Enter choice : 6
+Enter data : 30
+Node inserted successfully at end
+
+- - - Linked List Menu - - -
+Enter choice : 5
+Enter data : 20
+Enter position : 3
+Node inserted successfully at position 3
+
+- - - Linked List Menu - - -
+Enter choice : 2
+Linked List: 5 -> 10 -> 20 -> 30 -> NULL
+
+- - - Linked List Menu - - -
+Enter choice : 3
+Enter element to search : 20
+Element 20 found at position 3
+
+- - - Linked List Menu - - -
+Enter choice : 8
+Enter position to delete : 3
+Deleted element: 20
+
+- - - Linked List Menu - - -
+Enter choice : 7
+Deleted element: 5
+
+- - - Linked List Menu - - -
+Enter choice : 9
+Deleted element: 30
+
+- - - Linked List Menu - - -
+Enter choice : 2
+Linked List: 10 -> NULL
+
+- - - Linked List Menu - - -
+Enter choice : 10
+Exiting...`
+  },
+  {
+    number: 13,
+    file: '13_doubly_linked_list.c',
+    title: 'Doubly Linked List Operations',
+    category: 'Linked Lists',
+    aim: 'To write a menu-driven C program to implement Doubly Linked List operations: Creation, Display, Search, Insertion (Beginning, Middle, End), and Deletion (Beginning, Middle, End).',
+    algorithm: [
+      'Define a structure Node containing integer data, pointer prev, and pointer next. Set head = NULL.',
+      'CREATE: Read data, allocate newNode with prev = NULL and next = NULL. If head == NULL, set head = newNode. Else traverse to end and link newNode.',
+      'DISPLAY: If head == NULL, print empty. Else traverse and print each node data with <-> until NULL.',
+      'SEARCH: Read key. Traverse nodes tracking position. If node->data == key, print found position; else report not found.',
+      'INSERT AT BEGINNING: Allocate newNode, set newNode->next = head, newNode->prev = NULL. If head != NULL, head->prev = newNode. Set head = newNode.',
+      'INSERT AT MIDDLE: Read data and position pos. Traverse to (pos - 1)-th node. Link newNode between temp and temp->next adjusting next and prev pointers.',
+      'INSERT AT END: Allocate newNode. Traverse to the last node, set temp->next = newNode, and newNode->prev = temp.',
+      'DELETE AT BEGINNING: Set temp = head, head = head->next. If head != NULL, set head->prev = NULL. Free temp.',
+      'DELETE AT MIDDLE: Traverse to the pos-th node. Adjust delNode->prev->next = delNode->next and delNode->next->prev = delNode->prev. Free delNode.',
+      'DELETE AT END: Traverse to the last node. Set temp->prev->next = NULL. Free temp.'
+    ],
+    output: `- - - Doubly Linked List Menu - - -
+1. Create
+2. Display
+3. Search
+4. Insert at Beginning
+5. Insert at Middle
+6. Insert at End
+7. Delete at Beginning
+8. Delete at Middle
+9. Delete at End
+10. Exit
+Enter choice : 1
+Enter data : 10
+Node created successfully
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 4
+Enter data : 5
+Node inserted successfully at beginning
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 6
+Enter data : 30
+Node inserted successfully at end
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 5
+Enter data : 20
+Enter position : 3
+Node inserted successfully at position 3
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 2
+Linked List: 5 <-> 10 <-> 20 <-> 30 <-> NULL
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 3
+Enter element to search : 20
+Element 20 found at position 3
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 8
+Enter position to delete : 3
+Deleted element: 20
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 7
+Deleted element: 5
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 9
+Deleted element: 30
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 2
+Linked List: 10 <-> NULL
+
+- - - Doubly Linked List Menu - - -
+Enter choice : 10
+Exiting...`
+  },
+  {
+    number: 14,
+    file: '14_stack_linked_list.c',
+    title: 'Stack Operations Using Linked List',
+    category: 'Linked Lists',
+    aim: 'To write a menu-driven C program to implement Stack operations (Push, Pop, Display) dynamically using a singly linked list.',
+    algorithm: [
+      'Define a structure Node containing integer data and a pointer next.',
+      'Initialize top pointer to NULL.',
+      'PUSH(val): Allocate a new node using malloc. Set newNode->data = val, newNode->next = top, and top = newNode.',
+      'POP(): If top == NULL, print Stack Underflow. Else save top in temp, advance top = top->next, free temp, and return value.',
+      'DISPLAY(): If top == NULL, print Stack Underflow. Else traverse from top to NULL and print each element.',
+      'Loop menu choices (1. Push, 2. Pop, 3. Display, 4. Exit) until user exits.'
+    ],
+    output: `1. Push
+2. Pop
+3. Display
+4. Exit
+Enter your choice: 1
+Enter value to push: 10
+1. Push
+2. Pop
+3. Display
+4. Exit
+Enter your choice: 1
+Enter value to push: 20
+1. Push
+2. Pop
+3. Display
+4. Exit
+Enter your choice: 3
+Displaying contents:
+20
+10
+1. Push
+2. Pop
+3. Display
+4. Exit
+Enter your choice: 2
+Popped value: 20
+1. Push
+2. Pop
+3. Display
+4. Exit
+Enter your choice: 3
+Displaying contents:
+10
+1. Push
+2. Pop
+3. Display
+4. Exit
+Enter your choice: 4
+Exiting...`
+  },
+  {
+    number: 15,
+    file: '15_queue_linked_list.c',
+    title: 'Queue Operations Using Linked List',
+    category: 'Linked Lists',
+    aim: 'To write a menu-driven C program to implement Linear Queue operations (Enqueue, Dequeue, Display) dynamically using a singly linked list.',
+    algorithm: [
+      'Define a structure Node containing integer data and a pointer next.',
+      'Initialize front and rear pointers to NULL.',
+      'ENQUEUE(val): Allocate a new node with data = val and next = NULL. If front == NULL, set front = rear = newNode. Else set rear->next = newNode and rear = newNode.',
+      'DEQUEUE(): If front == NULL, print Queue Underflow. Else save front in temp, advance front = front->next. If front becomes NULL, set rear = NULL. Free temp and return value.',
+      'DISPLAY(): If front == NULL, print Queue Underflow. Else traverse from front to NULL and print each element.',
+      'Loop menu choices (1. Enqueue, 2. Dequeue, 3. Display, 4. Exit) until user exits.'
+    ],
+    output: `1. Enqueue
+2. Dequeue
+3. Display
+4. Exit
+Enter your choice: 1
+Enter value to enqueue: 100
+1. Enqueue
+2. Dequeue
+3. Display
+4. Exit
+Enter your choice: 1
+Enter value to enqueue: 200
+1. Enqueue
+2. Dequeue
+3. Display
+4. Exit
+Enter your choice: 3
+Displaying Contents:
+100
+200
+1. Enqueue
+2. Dequeue
+3. Display
+4. Exit
+Enter your choice: 2
+Dequeued value: 100
+1. Enqueue
+2. Dequeue
+3. Display
+4. Exit
+Enter your choice: 3
+Displaying Contents:
+200
+1. Enqueue
+2. Dequeue
+3. Display
+4. Exit
+Enter your choice: 4
+Exiting...`
   }
 ];
 

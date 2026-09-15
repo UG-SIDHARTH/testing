@@ -1,0 +1,24 @@
+{
+  "configurations": [
+    {
+      "name": "Win32",
+      "includePath": [
+        "${workspaceFolder}/**",
+        "D:/c_compiler/include/**",
+        "D:/c_compiler/lib/gcc/mingw32/6.3.0/include/**",
+        "D:/c_compiler/lib/gcc/mingw32/6.3.0/include-fixed/**",
+        "D:/c_compiler/mingw32/include/**"
+      ],
+      "defines": [
+        "_DEBUG",
+        "UNICODE",
+        "_UNICODE"
+      ],
+      "compilerPath": "D:/c_compiler/bin/gcc.exe",
+      "cStandard": "c11",
+      "cppStandard": "c++17",
+      "intelliSenseMode": "windows-gcc-x86"
+    }
+  ],
+  "version": 4
+}

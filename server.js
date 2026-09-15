@@ -408,7 +408,11 @@ app.get('/api/sample-programs', (req, res) => {
     { number: 8, file: '8_circular_queue.c', title: 'Circular Queue Operations Using Array', defaultStdin: '1\n10\n1\n20\n1\n30\n3\n2\n1\n40\n3\n4\n' },
     { number: 9, file: '9_dequeue.c', title: 'Double Ended Queue (Deque) Operations', defaultStdin: '2\n10\n2\n20\n1\n5\n5\n3\n5\n6\n' },
     { number: 10, file: '10_infixtopostfix.c', title: 'Infix to Postfix Expression Conversion', defaultStdin: '(2+3)*(4-5)\n' },
-    { number: 11, file: '11_postfix_evaluation.c', title: 'Evaluation of Postfix Expression Using Stack', defaultStdin: '2 3 + 4 5 - *\n' }
+    { number: 11, file: '11_postfix_evaluation.c', title: 'Evaluation of Postfix Expression Using Stack', defaultStdin: '2 3 + 4 5 - *\n' },
+    { number: 12, file: '12_single_linked_list.c', title: 'Singly Linked List Operations', defaultStdin: '1\n10\n4\n5\n6\n30\n5\n20\n3\n2\n3\n20\n8\n3\n2\n7\n9\n2\n10\n' },
+    { number: 13, file: '13_doubly_linked_list.c', title: 'Doubly Linked List Operations', defaultStdin: '1\n10\n4\n5\n6\n30\n5\n20\n3\n2\n3\n20\n8\n3\n2\n7\n9\n2\n10\n' },
+    { number: 14, file: '14_stack_linked_list.c', title: 'Stack Operations Using Linked List', defaultStdin: '1\n10\n1\n20\n3\n2\n3\n4\n' },
+    { number: 15, file: '15_queue_linked_list.c', title: 'Queue Operations Using Linked List', defaultStdin: '1\n100\n1\n200\n3\n2\n3\n4\n' }
   ];
 
   const results = sampleMeta.map(m => {

@@ -21,6 +21,7 @@ const chkSelectAllEl = document.getElementById('chkSelectAll');
 const selectedBadgeEl = document.getElementById('selectedBadge');
 const btnQuickSelectAllEl = document.getElementById('btnQuickSelectAll');
 const btnQuickSelect4and11El = document.getElementById('btnQuickSelect4and11');
+const btnQuickSelect12to15El = document.getElementById('btnQuickSelect12to15');
 const btnQuickSelectNoneEl = document.getElementById('btnQuickSelectNone');
 const btnAddBlankEl = document.getElementById('btnAddBlank');
 const dropzoneEl = document.getElementById('dropzone');
@@ -35,14 +36,29 @@ const lineNumbersEl = document.getElementById('lineNumbers');
 const codeStatsEl = document.getElementById('codeStats');
 const codeSyncStatusEl = document.getElementById('codeSyncStatus');
 
-// DOM Elements: Bottom Drawer (Stdin & Output)
-const drawerTabBtns = document.querySelectorAll('.drawer-tab-btn');
-const drawerPanes = document.querySelectorAll('.drawer-pane');
-const drawerHintEl = document.getElementById('drawerHint');
+// DOM Elements: Dual-Pane Interactive I/O Console (Stdin & Output)
+const ioConsoleBodyEl = document.getElementById('ioConsoleBody');
+const btnToggleIoViewEl = document.getElementById('btnToggleIoView');
+const ioViewModeLabelEl = document.getElementById('ioViewModeLabel');
+const paneStdinEl = document.getElementById('paneStdin');
+const paneOutputEl = document.getElementById('paneOutput');
 const stdinEditorEl = document.getElementById('stdinEditor');
+const stdinCharCountEl = document.getElementById('stdinCharCount');
+const btnResetDefaultStdinEl = document.getElementById('btnResetDefaultStdin');
+const btnClearStdinEl = document.getElementById('btnClearStdin');
+
 const outputEditorEl = document.getElementById('outputEditor');
-const outputStatusDotEl = document.getElementById('outputStatusDot');
+const ioOutputBadgeEl = document.getElementById('ioOutputBadge');
+const btnQuickRunInlineEl = document.getElementById('btnQuickRunInline');
+const btnCopyOutputEl = document.getElementById('btnCopyOutput');
 const btnRevertOutputEl = document.getElementById('btnRevertOutput');
+
+// DOM Elements: Guide Modal
+const btnIoGuideEl = document.getElementById('btnIoGuide');
+const btnOpenIoHelpEl = document.getElementById('btnOpenIoHelp');
+const ioGuideModalEl = document.getElementById('ioGuideModal');
+const btnCloseIoGuideEl = document.getElementById('btnCloseIoGuide');
+const btnAcknowledgeIoGuideEl = document.getElementById('btnAcknowledgeIoGuide');
 
 // DOM Elements: Right Panel
 const tabBtns = document.querySelectorAll('.output-tabs .tab-btn');
@@ -200,13 +216,20 @@ function renderProgramsList() {
       badgeText = 'ERR';
     }
 
+    const hasStdin = Boolean(prog.stdin || prog.defaultStdin);
+    const hasOutput = Boolean(prog.output);
+
     item.innerHTML = `
       <div class="prog-item-left">
         <input type="checkbox" class="prog-checkbox" data-check="${prog.id}" ${prog.selected ? 'checked' : ''} title="Include in PDF & batch runs">
         <span class="prog-item-num">${String(prog.number).padStart(2, '0')}</span>
         <div class="prog-item-info">
           <div class="prog-item-title">${escapeHtml(prog.title || `Practical ${prog.number}`)}</div>
-          <div class="prog-item-file">${escapeHtml(prog.file || `prog_${prog.number}.c`)}</div>
+          <div class="prog-item-meta">
+            <span class="prog-item-file">${escapeHtml(prog.file || `prog_${prog.number}.c`)}</span>
+            ${hasStdin ? '<span class="prog-chip stdin" title="Custom stdin configured">⌨ in</span>' : ''}
+            ${hasOutput ? '<span class="prog-chip out" title="Output verified">✓ out</span>' : ''}
+          </div>
         </div>
       </div>
       <div class="prog-item-right">
@@ -279,13 +302,22 @@ function selectProgram(id) {
   stdinEditorEl.value = prog.stdin || prog.defaultStdin || '';
   outputEditorEl.value = prog.output || prog.error || '';
 
-  // Update output status dot
-  if (prog.output) {
-    outputStatusDotEl.style.background = '#10b981';
-  } else if (prog.error) {
-    outputStatusDotEl.style.background = '#f43f5e';
-  } else {
-    outputStatusDotEl.style.background = '#64748b';
+  // Update I/O badge and char counter
+  if (stdinCharCountEl) {
+    stdinCharCountEl.textContent = `${(stdinEditorEl.value || '').length} chars`;
+  }
+
+  if (ioOutputBadgeEl) {
+    if (prog.output) {
+      ioOutputBadgeEl.className = 'status-badge success';
+      ioOutputBadgeEl.textContent = 'OK';
+    } else if (prog.error) {
+      ioOutputBadgeEl.className = 'status-badge error';
+      ioOutputBadgeEl.textContent = 'ERR';
+    } else {
+      ioOutputBadgeEl.className = 'status-badge idle';
+      ioOutputBadgeEl.textContent = 'IDLE';
+    }
   }
 
   codeSyncStatusEl.textContent = '● Saved';
@@ -296,6 +328,9 @@ function selectProgram(id) {
   if (prog.output || prog.error) {
     clearTerminal();
     appendTerminal('prompt', `gcc ${prog.file} -o prog && ./prog`, true);
+    if (prog.stdin || prog.defaultStdin) {
+      appendTerminal('info', `[STDIN INPUT]:\n${(prog.stdin || prog.defaultStdin).trimEnd()}`);
+    }
     if (prog.error) {
       appendTerminal('error', prog.error);
     }
@@ -316,10 +351,21 @@ function updateActiveFromEditor() {
   prog.stdin = stdinEditorEl.value;
   prog.output = outputEditorEl.value;
 
-  if (prog.output) {
-    outputStatusDotEl.style.background = '#10b981';
-  } else {
-    outputStatusDotEl.style.background = '#64748b';
+  if (stdinCharCountEl) {
+    stdinCharCountEl.textContent = `${(stdinEditorEl.value || '').length} chars`;
+  }
+
+  if (ioOutputBadgeEl) {
+    if (prog.output) {
+      ioOutputBadgeEl.className = 'status-badge success';
+      ioOutputBadgeEl.textContent = 'OK';
+    } else if (prog.error) {
+      ioOutputBadgeEl.className = 'status-badge error';
+      ioOutputBadgeEl.textContent = 'ERR';
+    } else {
+      ioOutputBadgeEl.className = 'status-badge idle';
+      ioOutputBadgeEl.textContent = 'IDLE';
+    }
   }
 
   const activeListItem = document.querySelector(`.program-item[data-id="${activeId}"]`);
@@ -440,14 +486,37 @@ btnQuickSelect4and11El.addEventListener('click', () => {
   showToast('success', `Selected specifically Programs 4 & 11 (${selectedCount} files).`);
 });
 
+// Quick select Programs 12 to 15 (Linked Lists, Stack & Queue)
+if (btnQuickSelect12to15El) {
+  btnQuickSelect12to15El.addEventListener('click', () => {
+    programs.forEach(p => {
+      p.selected = (p.number >= 12 && p.number <= 15);
+    });
+    renderProgramsList();
+
+    const selectedCount = programs.filter(p => p.selected).length;
+    showToast('success', `Selected Programs 12 to 15 (${selectedCount} files).`);
+  });
+}
+
 // 12. Compile & Run Single Program
 async function compileAndRunProgram(prog) {
   prog.status = 'compiling';
   renderProgramsList();
 
+  if (prog.id === activeId && ioOutputBadgeEl) {
+    ioOutputBadgeEl.className = 'status-badge compiling';
+    ioOutputBadgeEl.textContent = 'RUNNING';
+  }
+
   termStatusTitleEl.textContent = `Compiling & Executing ${prog.file}...`;
   clearTerminal();
+
+  const inputToUse = prog.stdin !== undefined && prog.stdin !== '' ? prog.stdin : (prog.defaultStdin || '');
   appendTerminal('prompt', `gcc ${prog.file} -o prog && ./prog`, true);
+  if (inputToUse) {
+    appendTerminal('info', `[STDIN PIPED TO PROGRAM]:\n${inputToUse.trimEnd()}`);
+  }
 
   try {
     const res = await fetch('/api/compile-run', {
@@ -455,7 +524,7 @@ async function compileAndRunProgram(prog) {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
         code: prog.code,
-        stdin: prog.stdin || prog.defaultStdin || ''
+        stdin: inputToUse
       })
     });
 
@@ -467,6 +536,10 @@ async function compileAndRunProgram(prog) {
       prog.output = data.stdout || '';
       appendTerminal('error', `[ERROR]:\n${prog.error}`);
       termStatusTitleEl.textContent = `Error in ${prog.file}`;
+      if (prog.id === activeId && ioOutputBadgeEl) {
+        ioOutputBadgeEl.className = 'status-badge error';
+        ioOutputBadgeEl.textContent = 'ERR';
+      }
     } else {
       prog.status = 'success';
       prog.error = '';
@@ -474,15 +547,14 @@ async function compileAndRunProgram(prog) {
       appendTerminal('success', prog.output);
       termStatusTitleEl.textContent = `Finished ${prog.file} (${data.executionTimeMs}ms)`;
       termExecTimeEl.textContent = `${data.executionTimeMs}ms`;
+      if (prog.id === activeId && ioOutputBadgeEl) {
+        ioOutputBadgeEl.className = 'status-badge success';
+        ioOutputBadgeEl.textContent = 'OK';
+      }
     }
 
     if (prog.id === activeId) {
       outputEditorEl.value = prog.output || prog.error || '';
-      if (prog.output) {
-        outputStatusDotEl.style.background = '#10b981';
-      } else {
-        outputStatusDotEl.style.background = '#f43f5e';
-      }
     }
 
   } catch (err) {
@@ -490,6 +562,10 @@ async function compileAndRunProgram(prog) {
     prog.error = err.message;
     appendTerminal('error', `[NETWORK/SERVER ERROR]: ${err.message}`);
     termStatusTitleEl.textContent = `Server Error`;
+    if (prog.id === activeId && ioOutputBadgeEl) {
+      ioOutputBadgeEl.className = 'status-badge error';
+      ioOutputBadgeEl.textContent = 'ERR';
+    }
   }
 
   renderProgramsList();
@@ -697,11 +773,11 @@ async function exportHtmlRecord() {
 btnExportHtmlEl.addEventListener('click', exportHtmlRecord);
 btnDownloadHtmlEl.addEventListener('click', exportHtmlRecord);
 
-// 17. Load 11 DS Lab Presets
+// 17. Load 15 DS Lab Presets
 async function loadPresets() {
   loadingOverlayEl.classList.remove('hidden');
-  loadingTitleEl.textContent = 'Loading 11 DS Presets...';
-  loadingDescEl.textContent = 'Fetching verified C code & inputs for Data Structures practicals...';
+  loadingTitleEl.textContent = 'Loading 15 DS Presets...';
+  loadingDescEl.textContent = 'Fetching verified C code & inputs for all 15 Data Structures practicals...';
 
   try {
     const res = await fetch('/api/sample-programs');
@@ -727,11 +803,12 @@ async function loadPresets() {
         selectProgram(programs[0].id);
       }
       clearTerminal();
-      appendTerminal('info', 'Loaded 11 Data Structures practical programs with default test inputs.');
-      appendTerminal('info', 'Use checkboxes to pick specific experiments (or click "4 & 11" for Programs 4 & 11).');
-      appendTerminal('info', 'Click "Run Selected" to compile with MinGW GCC.');
+      appendTerminal('info', `Loaded ${data.programs.length} Data Structures practical programs with verified test inputs.`);
+      appendTerminal('info', 'Interactive custom input (stdin) & real-time output capture enabled for all practicals.');
+      appendTerminal('info', 'Use checkboxes to select practicals, or click quick buttons ("All 15", "4 & 11", "12–15").');
+      appendTerminal('info', 'Click "Run & Get Output" (Ctrl+↵) to compile with MinGW GCC and verify results.');
 
-      showToast('success', 'Loaded 11 verified Data Structures C programs.');
+      showToast('success', `Loaded ${data.programs.length} verified Data Structures C programs.`);
     }
   } catch (err) {
     showToast('error', 'Failed to load presets: ' + err.message);
@@ -814,19 +891,101 @@ dropzoneEl.addEventListener('drop', (e) => {
   handleFiles(e.dataTransfer.files);
 });
 
-// 19. Drawer Tabs Switching (Stdin vs Output)
-drawerTabBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    const target = btn.dataset.drawer;
-    drawerTabBtns.forEach(b => b.classList.toggle('active', b === btn));
-    drawerPanes.forEach(pane => pane.classList.toggle('active', pane.id === target));
+// 19. Interactive I/O Console Actions & View Toggle
+let isSideBySide = true;
 
-    if (target === 'drawerStdin') {
-      drawerHintEl.textContent = 'Optional: Provide interactive inputs for scanf() separated by spaces or newlines';
+if (btnToggleIoViewEl) {
+  btnToggleIoViewEl.addEventListener('click', () => {
+    isSideBySide = !isSideBySide;
+    if (isSideBySide) {
+      ioConsoleBodyEl.classList.remove('tabbed');
+      ioConsoleBodyEl.classList.add('side-by-side');
+      ioViewModeLabelEl.textContent = '◫ Side-by-Side View';
+      showToast('info', 'Switched to side-by-side Input & Output view.');
     } else {
-      drawerHintEl.textContent = 'Edit or format the program output directly before PDF generation';
+      ioConsoleBodyEl.classList.remove('side-by-side');
+      ioConsoleBodyEl.classList.add('tabbed');
+      paneStdinEl.classList.add('active');
+      ioViewModeLabelEl.textContent = '⊟ Single-Pane View';
+      showToast('info', 'Switched to single-pane view.');
     }
   });
+}
+
+// Reset Default Stdin for Current Program
+if (btnResetDefaultStdinEl) {
+  btnResetDefaultStdinEl.addEventListener('click', () => {
+    const prog = programs.find(p => p.id === activeId);
+    if (!prog) return;
+
+    stdinEditorEl.value = prog.defaultStdin || '';
+    updateActiveFromEditor();
+    if (stdinCharCountEl) {
+      stdinCharCountEl.textContent = `${stdinEditorEl.value.length} chars`;
+    }
+    showToast('info', `Reset preset default stdin for ${prog.file}`);
+  });
+}
+
+// Clear Stdin
+if (btnClearStdinEl) {
+  btnClearStdinEl.addEventListener('click', () => {
+    stdinEditorEl.value = '';
+    updateActiveFromEditor();
+    if (stdinCharCountEl) {
+      stdinCharCountEl.textContent = '0 chars';
+    }
+    showToast('info', 'Standard input cleared.');
+  });
+}
+
+// Quick Run from inside Output Pane
+if (btnQuickRunInlineEl) {
+  btnQuickRunInlineEl.addEventListener('click', runActiveProgram);
+}
+
+// Copy Output to Clipboard
+if (btnCopyOutputEl) {
+  btnCopyOutputEl.addEventListener('click', () => {
+    const text = outputEditorEl.value.trim();
+    if (!text) {
+      showToast('info', 'No output captured to copy yet.');
+      return;
+    }
+    navigator.clipboard.writeText(text)
+      .then(() => showToast('success', 'Output copied to clipboard!'))
+      .catch(() => showToast('error', 'Clipboard permission denied.'));
+  });
+}
+
+// 20. Interactive I/O Guide Modal
+function openIoGuide() {
+  if (ioGuideModalEl) {
+    ioGuideModalEl.classList.remove('hidden');
+  }
+}
+
+function closeIoGuide() {
+  if (ioGuideModalEl) {
+    ioGuideModalEl.classList.add('hidden');
+  }
+}
+
+if (btnIoGuideEl) btnIoGuideEl.addEventListener('click', openIoGuide);
+if (btnOpenIoHelpEl) btnOpenIoHelpEl.addEventListener('click', openIoGuide);
+if (btnCloseIoGuideEl) btnCloseIoGuideEl.addEventListener('click', closeIoGuide);
+if (btnAcknowledgeIoGuideEl) btnAcknowledgeIoGuideEl.addEventListener('click', closeIoGuide);
+
+if (ioGuideModalEl) {
+  ioGuideModalEl.addEventListener('click', (e) => {
+    if (e.target === ioGuideModalEl) closeIoGuide();
+  });
+}
+
+window.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && ioGuideModalEl && !ioGuideModalEl.classList.contains('hidden')) {
+    closeIoGuide();
+  }
 });
 
 // 20. Output Panel Tabs (Terminal vs Preview vs Settings)

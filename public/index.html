@@ -17,14 +17,23 @@
       <div class="brand-logo">⚡</div>
       <div class="brand-text">
         <h1 class="brand-title">LabRecord Studio</h1>
-        <p class="brand-tagline">C Code Compiler &amp; Academic PDF Lab Record Generator</p>
+        <p class="brand-tagline">Interactive C Compiler (Custom Stdin &amp; Live Output) &bull; Academic PDF Record Generator</p>
+      </div>
+      <div class="io-status-pill" title="Custom stdin input is active for scanf() and output is captured live via GCC">
+        <span class="io-pulse-dot"></span>
+        <span class="io-pill-text">User Input (stdin) &amp; Output Enabled</span>
       </div>
     </div>
 
     <div class="header-actions">
-      <button class="btn btn-secondary" id="btnLoadPresets" title="Load the 11 verified Data Structures C programs">
+      <button class="btn btn-secondary" id="btnLoadPresets" title="Load all 15 verified Data Structures C programs with test inputs">
         <span class="btn-icon">⚡</span>
-        <span>Load 11 DS Presets</span>
+        <span>Load 15 DS Presets</span>
+      </button>
+
+      <button class="btn btn-secondary" id="btnIoGuide" title="Click to see how interactive input and output work">
+        <span class="btn-icon">💡</span>
+        <span>I/O Guide</span>
       </button>
 
       <label class="btn btn-secondary file-upload-btn" id="lblUpload" title="Upload one or multiple .c files">
@@ -71,8 +80,9 @@
         </label>
         <span class="selected-pill" id="selectedBadge">0 Selected</span>
         <div class="selection-quick-btns">
-          <button class="btn-pill" id="btnQuickSelectAll" title="Select all programs">All</button>
+          <button class="btn-pill" id="btnQuickSelectAll" title="Select all 15 programs">All 15</button>
           <button class="btn-pill highlight" id="btnQuickSelect4and11" title="Select specifically Program 4 and Program 11">4 &amp; 11</button>
+          <button class="btn-pill" id="btnQuickSelect12to15" title="Select Linked Lists, Stack, and Queue (Programs 12 to 15)">12–15</button>
           <button class="btn-pill" id="btnQuickSelectNone" title="Deselect all">None</button>
         </div>
       </div>
@@ -107,7 +117,7 @@
         <div class="editor-actions">
           <button class="btn btn-sm btn-primary" id="btnRunCurrent" title="Compile and run only this program (Ctrl + Enter)">
             <span class="btn-icon">▶</span>
-            <span>Run This (Ctrl+↵)</span>
+            <span>Run &amp; Get Output (Ctrl+↵)</span>
           </button>
         </div>
       </div>
@@ -131,36 +141,68 @@
         </div>
       </div>
 
-      <!-- BOTTOM CONFIG: STDIN & EDITABLE CAPTURED OUTPUT -->
-      <div class="editor-bottom-drawer">
-        <!-- Drawer Tabs -->
-        <div class="drawer-header">
-          <div class="drawer-tabs">
-            <button class="drawer-tab-btn active" id="btnDrawerStdin" data-drawer="drawerStdin">
-              <span class="drawer-tab-icon">⌨</span>
-              <span>Standard Input (stdin for scanf)</span>
-            </button>
-            <button class="drawer-tab-btn" id="btnDrawerOutput" data-drawer="drawerOutput">
-              <span class="drawer-tab-icon">📋</span>
-              <span>Output for PDF Record</span>
-              <span class="output-status-dot" id="outputStatusDot"></span>
-            </button>
+      <!-- INTERACTIVE I/O CONSOLE: DUAL PANE USER INPUT (STDIN) & EXECUTION OUTPUT (STDOUT) -->
+      <div class="io-console-container" id="ioConsoleContainer">
+        <div class="io-console-header">
+          <div class="io-header-left">
+            <span class="io-console-title">⚡ Interactive Execution &amp; I/O</span>
+            <span class="io-header-badge input-badge">✓ Custom stdin input active</span>
+            <span class="io-header-badge output-badge">✓ Real-time output capture</span>
           </div>
-          <span class="drawer-hint" id="drawerHint">Optional: Provide interactive inputs for scanf() separated by spaces or newlines</span>
+          <div class="io-header-right">
+            <button class="btn-xs btn-outline" id="btnToggleIoView" title="Toggle between Side-by-Side and Tabbed I/O View">
+              <span id="ioViewModeLabel">◫ Side-by-Side View</span>
+            </button>
+            <button class="btn-xs btn-outline" id="btnOpenIoHelp" title="Learn how to provide scanf() inputs">❓ Help</button>
+          </div>
         </div>
 
-        <!-- Drawer Content 1: Stdin -->
-        <div class="drawer-pane active" id="drawerStdin">
-          <textarea id="stdinEditor" class="drawer-textarea font-mono" placeholder="e.g. 2 2&#10;1 2 3 4&#10;5 6 7 8"></textarea>
-        </div>
-
-        <!-- Drawer Content 2: Editable Output -->
-        <div class="drawer-pane" id="drawerOutput">
-          <div class="output-toolbar">
-            <span class="output-toolbar-label">This output will be printed directly on the PDF record below the source code. You can edit or format it anytime:</span>
-            <button class="btn btn-xs btn-secondary" id="btnRevertOutput" title="Clear or refresh output">Clear Output</button>
+        <!-- Dual Pane Body (Side-by-Side by default) -->
+        <div class="io-console-body side-by-side" id="ioConsoleBody">
+          
+          <!-- LEFT PANE: USER INPUT (STDIN) -->
+          <div class="io-pane io-pane-input" id="paneStdin">
+            <div class="io-pane-bar">
+              <div class="io-pane-title-group">
+                <span class="pane-icon">⌨</span>
+                <span class="pane-title">Standard Input (stdin for scanf)</span>
+                <span class="pane-pill" id="stdinCharCount">0 chars</span>
+              </div>
+              <div class="io-pane-actions">
+                <button class="btn-pane-action" id="btnResetDefaultStdin" title="Reset to preset default test input">Default Input</button>
+                <button class="btn-pane-action" id="btnClearStdin" title="Clear input box">Clear</button>
+              </div>
+            </div>
+            <div class="io-pane-content">
+              <textarea id="stdinEditor" class="io-textarea font-mono" placeholder="Enter custom inputs for scanf() separated by spaces or newlines...&#10;Example for 2x2 matrix:&#10;2 2&#10;1 2 3 4&#10;5 6 7 8"></textarea>
+            </div>
+            <div class="io-pane-footer">
+              <span class="io-hint-text">💡 Piped directly to your C program's stdin during execution.</span>
+            </div>
           </div>
-          <textarea id="outputEditor" class="drawer-textarea font-mono" placeholder="(No output captured yet. Click 'Run This' to compile and execute, or type/paste precomputed output here...)"></textarea>
+
+          <!-- RIGHT PANE: PROGRAM OUTPUT (STDOUT & STDERR) -->
+          <div class="io-pane io-pane-output" id="paneOutput">
+            <div class="io-pane-bar">
+              <div class="io-pane-title-group">
+                <span class="pane-icon">📋</span>
+                <span class="pane-title">Captured Program Output</span>
+                <span class="status-badge idle" id="ioOutputBadge">IDLE</span>
+              </div>
+              <div class="io-pane-actions">
+                <button class="btn-pane-action highlight" id="btnQuickRunInline" title="Compile and run immediately (Ctrl+Enter)">▶ Run Now</button>
+                <button class="btn-pane-action" id="btnCopyOutput" title="Copy output to clipboard">Copy</button>
+                <button class="btn-pane-action" id="btnRevertOutput" title="Clear captured output">Clear</button>
+              </div>
+            </div>
+            <div class="io-pane-content">
+              <textarea id="outputEditor" class="io-textarea font-mono" placeholder="(No output captured yet. Provide input on the left and click 'Run & Get Output' to compile and execute with MinGW GCC...)"></textarea>
+            </div>
+            <div class="io-pane-footer">
+              <span class="io-hint-text">📄 This verified output is automatically included in your A4 PDF / HTML lab record.</span>
+            </div>
+          </div>
+
         </div>
       </div>
     </section>
@@ -178,6 +220,7 @@
         <button class="tab-btn" data-tab="tabSettings" id="btnTabSettings">
           <span class="tab-icon">⚙</span> Document Header
         </button>
+      </div>
       </div>
 
       <!-- Tab Content 1: Terminal Console -->
@@ -281,6 +324,72 @@
     </aside>
 
   </main>
+
+  <!-- INTERACTIVE I/O GUIDE MODAL -->
+  <div class="modal-overlay hidden" id="ioGuideModal">
+    <div class="modal-dialog">
+      <div class="modal-header">
+        <div class="modal-header-title">
+          <span class="modal-icon">💡</span>
+          <h3>How Interactive Input (stdin) &amp; Output Work</h3>
+        </div>
+        <button class="btn-close-modal" id="btnCloseIoGuide" title="Close Guide">&times;</button>
+      </div>
+      <div class="modal-body">
+        <div class="guide-section">
+          <h4>1. Can I enter custom inputs and get real-time output?</h4>
+          <p><strong>Yes!</strong> This web studio features a full live compilation backend powered by <strong>MinGW GCC</strong>. When your C code calls <code>scanf()</code> or reads from <code>stdin</code>, it automatically receives whatever values you provide in the <strong>Standard Input (stdin)</strong> box.</p>
+        </div>
+
+        <div class="guide-section">
+          <h4>2. How to format your inputs:</h4>
+          <p>Values can be separated by spaces or newlines, matching the sequence expected by your <code>scanf()</code> statements:</p>
+          <div class="guide-examples-grid">
+            <div class="guide-example-card">
+              <span class="example-tag">Simple Variables</span>
+              <pre class="example-code"><code>scanf("%d %d", &amp;a, &amp;b);</code></pre>
+              <div class="example-input-label">Stdin Input:</div>
+              <pre class="example-input"><code>15 27</code></pre>
+            </div>
+            <div class="guide-example-card">
+              <span class="example-tag">Matrix Operations</span>
+              <pre class="example-code"><code>// row col, then elements
+scanf("%d %d", &amp;r, &amp;c);</code></pre>
+              <div class="example-input-label">Stdin Input:</div>
+              <pre class="example-input"><code>2 2
+1 2 3 4
+5 6 7 8</code></pre>
+            </div>
+            <div class="guide-example-card">
+              <span class="example-tag">Menu-Driven Programs</span>
+              <pre class="example-code"><code>// 1: Push, 3: Display, 4: Exit
+scanf("%d", &amp;choice);</code></pre>
+              <div class="example-input-label">Stdin Input:</div>
+              <pre class="example-input"><code>1
+10
+1
+20
+3
+4</code></pre>
+            </div>
+          </div>
+        </div>
+
+        <div class="guide-section">
+          <h4>3. How program output is handled:</h4>
+          <p>Clicking <strong>"Run &amp; Get Output"</strong> (or pressing <code>Ctrl + Enter</code>) compiles and executes your code. The resulting <code>stdout</code> and <code>stderr</code> are captured live:</p>
+          <ul class="guide-list">
+            <li><strong>Live in the Output Box:</strong> You can review and even edit or fine-tune formatting here before generating records.</li>
+            <li><strong>In the Terminal Console:</strong> Review execution timestamps, exit codes, and diagnostic messages.</li>
+            <li><strong>In the Academic Lab Record:</strong> Automatically printed beneath each program in the publication-grade A4 PDF and HTML exports!</li>
+          </ul>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-primary" id="btnAcknowledgeIoGuide">Got It, Let's Code!</button>
+      </div>
+    </div>
+  </div>
 
   <!-- TOAST NOTIFICATION CONTAINER -->
   <div class="toast-container" id="toastContainer"></div>

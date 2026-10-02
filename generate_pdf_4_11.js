@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer-core');
 const selectedPrograms = [
   {
     number: 4,
-    file: '4_sparse_matrix_add.c',
+    file: '4.c',
     title: 'Sparse Matrix Addition',
     output: `Enter total number of rows and columns for the matrices: 3 3
 Enter number of non-zero elements for Matrix 1: 2
@@ -28,7 +28,7 @@ Row	Col	Value
   },
   {
     number: 11,
-    file: '11_postfix_evaluation.c',
+    file: '11.c',
     title: 'Evaluation of Postfix Expression Using Stack',
     output: `Enter the postfix expression: 2 3 + 4 5 - *
 Result: -5`

@@ -7,7 +7,7 @@ const { PDFParse } = require('pdf-parse');
 const programs = [
   {
     number: 1,
-    file: '1_matrix_add.c',
+    file: '1.c',
     title: 'Matrix Addition',
     category: 'Arrays & Matrices',
     aim: 'To write a C program to perform addition of two matrices using two-dimensional arrays and display the resultant matrix.',
@@ -26,7 +26,7 @@ Added:
   },
   {
     number: 2,
-    file: '2_polynomial_add.c',
+    file: '2.c',
     title: 'Addition of Two Polynomials Using Structures',
     category: 'Structures & Polynomials',
     aim: 'To write a C program to represent polynomials using an array of structures and compute the sum of two polynomials.',
@@ -55,7 +55,7 @@ Sum:
   },
   {
     number: 3,
-    file: '3_matrix_to_sparse.c',
+    file: '3.c',
     title: 'Tuple Representation of Sparse Matrix',
     category: 'Sparse Matrices',
     aim: 'To write a C program to convert a standard 2D matrix into its 3-tuple (triplet) representation (Row, Column, Value).',
@@ -74,7 +74,7 @@ Enter 9 elements: 0 0 5 0 8 0 0 0 0
   },
   {
     number: 4,
-    file: '4_sparse_matrix_add.c',
+    file: '4.c',
     title: 'Sparse Matrix Addition',
     category: 'Sparse Matrices',
     aim: 'To write a C program to add two sparse matrices represented in triplet form.',
@@ -109,7 +109,7 @@ Row	Col	Value
   },
   {
     number: 5,
-    file: '5_sparse_trans.c',
+    file: '5.c',
     title: 'Transpose of Sparse Matrix',
     category: 'Sparse Matrices',
     aim: 'To write a C program to compute the transpose of a sparse matrix in triplet representation and sort the result.',
@@ -137,7 +137,7 @@ The transposed matrix is:
   },
   {
     number: 6,
-    file: '6_stack.c',
+    file: '6.c',
     title: 'Stack Operations Using Array',
     category: 'Stacks',
     aim: 'To write a menu-driven C program to implement Stack operations (Push, Pop, Display) using an array.',
@@ -190,7 +190,7 @@ Exiting...`
   },
   {
     number: 7,
-    file: '7_standard_queue.c',
+    file: '7.c',
     title: 'Linear Queue Operations Using Array',
     category: 'Queues',
     aim: 'To write a menu-driven C program to implement Linear Queue operations (Enqueue, Dequeue, Display) using an array.',
@@ -243,7 +243,7 @@ Exiting...`
   },
   {
     number: 8,
-    file: '8_circular_queue.c',
+    file: '8.c',
     title: 'Circular Queue Operations Using Array',
     category: 'Queues',
     aim: 'To write a menu-driven C program to implement a Circular Queue with count variable to optimize space utilization.',
@@ -311,7 +311,7 @@ Exiting...`
   },
   {
     number: 9,
-    file: '9_dequeue.c',
+    file: '9.c',
     title: 'Double Ended Queue (Deque) Operations',
     category: 'Queues',
     aim: 'To write a menu-driven C program to implement a Double Ended Queue (Deque) supporting insertions and deletions at both front and rear.',
@@ -394,7 +394,7 @@ Exiting...`
   },
   {
     number: 10,
-    file: '10_infixtopostfix.c',
+    file: '10.c',
     title: 'Infix to Postfix Expression Conversion',
     category: 'Expression Processing',
     aim: 'To write a C program to convert an infix arithmetic expression into a postfix expression using an operator stack.',
@@ -414,7 +414,7 @@ Postfix Expression:
   },
   {
     number: 11,
-    file: '11_postfix_evaluation.c',
+    file: '11.c',
     title: 'Evaluation of Postfix Expression Using Stack',
     category: 'Expression Processing',
     aim: 'To write a C program to evaluate a postfix expression using an operand stack and arithmetic operators (+, -, *, /).',
@@ -434,7 +434,7 @@ Result: -5`
   },
   {
     number: 12,
-    file: '12_single_linked_list.c',
+    file: '12.c',
     title: 'Singly Linked List Operations',
     category: 'Linked Lists',
     aim: 'To write a menu-driven C program to implement Singly Linked List operations: Creation, Display, Search, Insertion (Beginning, Middle, End), and Deletion (Beginning, Middle, End).',
@@ -517,7 +517,7 @@ Exiting...`
   },
   {
     number: 13,
-    file: '13_doubly_linked_list.c',
+    file: '13.c',
     title: 'Doubly Linked List Operations',
     category: 'Linked Lists',
     aim: 'To write a menu-driven C program to implement Doubly Linked List operations: Creation, Display, Search, Insertion (Beginning, Middle, End), and Deletion (Beginning, Middle, End).',
@@ -596,7 +596,7 @@ Exiting...`
   },
   {
     number: 14,
-    file: '14_stack_linked_list.c',
+    file: '14.c',
     title: 'Stack Operations Using Linked List',
     category: 'Linked Lists',
     aim: 'To write a menu-driven C program to implement Stack operations (Push, Pop, Display) dynamically using a singly linked list.',
@@ -650,7 +650,7 @@ Exiting...`
   },
   {
     number: 15,
-    file: '15_queue_linked_list.c',
+    file: '15.c',
     title: 'Queue Operations Using Linked List',
     category: 'Linked Lists',
     aim: 'To write a menu-driven C program to implement Linear Queue operations (Enqueue, Dequeue, Display) dynamically using a singly linked list.',

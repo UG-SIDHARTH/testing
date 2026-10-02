@@ -5,7 +5,7 @@ const puppeteer = require('puppeteer-core');
 const selectedPrograms = [
   {
     number: 12,
-    file: '12_single_linked_list.c',
+    file: '12.c',
     title: 'Singly Linked List Operations',
     output: `- - - Linked List Menu - - -
 1. Create
@@ -70,7 +70,7 @@ Exiting...`
   },
   {
     number: 13,
-    file: '13_doubly_linked_list.c',
+    file: '13.c',
     title: 'Doubly Linked List Operations',
     output: `- - - Doubly Linked List Menu - - -
 1. Create
@@ -135,7 +135,7 @@ Exiting...`
   },
   {
     number: 14,
-    file: '14_stack_linked_list.c',
+    file: '14.c',
     title: 'Stack Operations Using Linked List',
     output: `1. Push
 2. Pop
@@ -179,7 +179,7 @@ Exiting...`
   },
   {
     number: 15,
-    file: '15_queue_linked_list.c',
+    file: '15.c',
     title: 'Queue Operations Using Linked List',
     output: `1. Enqueue
 2. Dequeue

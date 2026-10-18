@@ -1,4 +1,0 @@
--ID:/c_compiler/include
--ID:/c_compiler/lib/gcc/mingw32/6.3.0/include
--ID:/c_compiler/lib/gcc/mingw32/6.3.0/include-fixed
--ID:/c_compiler/mingw32/include

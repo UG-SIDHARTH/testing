@@ -1,0 +1,22 @@
+{
+  "name": "labrecord-studio",
+  "version": "2.0.0",
+  "description": "Interactive C Compiler & Academic PDF Lab Record Studio for 21 Data Structures Practicals",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js"
+  },
+  "keywords": [
+    "c",
+    "compiler",
+    "data-structures",
+    "lab-record",
+    "pdf-generator"
+  ],
+  "author": "Sidharth",
+  "license": "MIT",
+  "dependencies": {
+    "express": "^4.18.2"
+  }
+}

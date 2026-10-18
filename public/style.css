@@ -266,15 +266,67 @@ body {
   border-color: #3b82f6;
 }
 
+/* SIDEBAR SEARCH */
+.sidebar-search {
+  padding: 8px 12px;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  background: rgba(15, 23, 42, 0.4);
+  position: relative;
+}
+.sidebar-search .search-icon {
+  font-size: 11px;
+  opacity: 0.6;
+}
+.sidebar-search input {
+  flex: 1;
+  background: transparent;
+  border: none;
+  color: #ffffff;
+  font-size: 11px;
+  outline: none;
+  font-family: inherit;
+}
+.sidebar-search input::placeholder {
+  color: #64748b;
+}
+.btn-clear-search {
+  background: none;
+  border: none;
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 11px;
+  padding: 1px 4px;
+}
+.btn-clear-search:hover {
+  color: #ffffff;
+}
+.empty-filter-state {
+  padding: 24px 14px;
+  text-align: center;
+  color: #94a3b8;
+  font-size: 12px;
+}
+.empty-filter-state p {
+  margin-bottom: 8px;
+}
+
 /* SELECTION TOOLBAR */
 .selection-toolbar {
   padding: 8px 12px;
   background: #0b1120;
   border-bottom: 1px solid var(--border-color);
   display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.select-all-row {
+  display: flex;
   align-items: center;
   justify-content: space-between;
-  gap: 8px;
 }
 
 .select-all-label {
@@ -306,6 +358,7 @@ body {
 
 .selection-quick-btns {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 4px;
 }
@@ -314,16 +367,18 @@ body {
   background: #1e293b;
   border: 1px solid #334155;
   color: #94a3b8;
-  font-size: 10px;
+  font-size: 9.5px;
   font-weight: 600;
-  padding: 2px 6px;
+  padding: 3px 6px;
   border-radius: 4px;
   cursor: pointer;
   transition: all 0.15s ease;
+  white-space: nowrap;
 }
 .btn-pill:hover {
   background: #334155;
   color: #ffffff;
+  border-color: #475569;
 }
 .btn-pill.highlight {
   background: rgba(2, 132, 199, 0.2);
@@ -593,6 +648,106 @@ body {
 .text-input:focus {
   border-color: var(--border-focus);
   box-shadow: 0 0 0 2px rgba(56, 189, 248, 0.15);
+}
+
+.cat-group {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+.cat-pill {
+  display: inline-flex;
+  align-items: center;
+  background: rgba(37, 99, 235, 0.15);
+  border: 1px solid rgba(59, 130, 246, 0.4);
+  color: #60a5fa;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 6px;
+  height: 31px;
+  white-space: nowrap;
+}
+
+/* EXPERIMENT OBJECTIVE & ALGORITHM CARD */
+.experiment-info-card {
+  background: linear-gradient(135deg, rgba(30, 41, 59, 0.7), rgba(15, 23, 42, 0.9));
+  border: 1px solid #334155;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2);
+  transition: all 0.2s ease;
+  flex-shrink: 0;
+}
+.exp-info-header {
+  padding: 8px 12px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+.exp-info-badge {
+  background: #2563eb;
+  color: #ffffff;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 2px 6px;
+  border-radius: 4px;
+  flex-shrink: 0;
+}
+.exp-info-aim {
+  font-size: 11.5px;
+  color: #cbd5e1;
+  font-weight: 500;
+  flex: 1;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.btn-toggle-algo {
+  background: rgba(51, 65, 85, 0.6);
+  border: 1px solid #475569;
+  color: #38bdf8;
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 4px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  flex-shrink: 0;
+  transition: all 0.15s ease;
+}
+.btn-toggle-algo:hover {
+  background: #334155;
+  color: #ffffff;
+}
+.exp-algo-body {
+  padding: 10px 14px;
+  border-top: 1px solid #334155;
+  background: rgba(11, 17, 32, 0.85);
+  max-height: 140px;
+  overflow-y: auto;
+}
+.algo-heading {
+  font-size: 11px;
+  font-weight: 700;
+  color: #94a3b8;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-bottom: 6px;
+}
+.exp-algo-list {
+  margin: 0;
+  padding-left: 20px;
+  font-size: 11.5px;
+  color: #e2e8f0;
+  line-height: 1.5;
+}
+.exp-algo-list li {
+  margin-bottom: 4px;
 }
 
 /* CODE EDITOR WINDOW */
@@ -1427,6 +1582,14 @@ body {
 
 .font-mono {
   font-family: var(--font-mono) !important;
+}
+
+.btn-full-width {
+  width: 100%;
+  justify-content: center;
+  margin-top: 14px;
+  padding: 10px 14px;
+  font-size: 13px;
 }
 
 /* RESPONSIVE LAYOUT */

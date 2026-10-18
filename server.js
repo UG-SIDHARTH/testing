@@ -18,12 +18,15 @@ app.use(express.static(path.join(__dirname, 'public')));
 // Load presets data
 let allPresets = [];
 try {
-  const jsonPath = path.join(__dirname, 'scratch', 'all_programs.json');
-  if (fs.existsSync(jsonPath)) {
-    allPresets = JSON.parse(fs.readFileSync(jsonPath, 'utf8'));
+  const publicJson = path.join(__dirname, 'public', 'programs.json');
+  const scratchJson = path.join(__dirname, 'scratch', 'all_programs.json');
+  if (fs.existsSync(publicJson)) {
+    allPresets = JSON.parse(fs.readFileSync(publicJson, 'utf8'));
+  } else if (fs.existsSync(scratchJson)) {
+    allPresets = JSON.parse(fs.readFileSync(scratchJson, 'utf8'));
   }
 } catch (e) {
-  console.warn('Could not read scratch/all_programs.json:', e.message);
+  console.warn('Could not read presets json:', e.message);
 }
 
 // 1. API: Sample Programs
